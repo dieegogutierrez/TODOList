@@ -43,7 +43,3 @@ class Task(db.Model):
 
     def __repr__(self):
         return f"Task('{self.task}', '{self.date}')"
-
-
-with app.app_context():
-    db.create_all()
