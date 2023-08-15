@@ -1,0 +1,210 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="task-section">
+        <form action="{{ url_for('create_task') }}" method="POST">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group row">
+                <legend class="border-bottom mb-4 display-5 text-center">Create Task</legend>
+                <div class="form-group col-sm-7 col-md-8 col-lg-9 col-6">
+                    {% if form.task.errors %}
+                        {{ form.task(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.task.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.task(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group col-sm-5 col-md-4 col-lg-3 col-6">
+                    {{ form.date(class="form-control form-control-lg") }}
+                </div>
+            </fieldset>
+            <div class="form-group py-2 d-flex justify-content-center">
+                <button type="submit" class="btn btn-warning" name="submit_task">Create</button>
+            </div>
+        </form>
+    </div>
+    {% if tasks.items %}
+    <div class="task-section">
+    <form action="{{ url_for('create_task') }}" method="POST">
+        {{ form.hidden_tag() }}
+        <legend class="border-bottom mb-4 display-5 text-center">Show Tasks: {{ legend }}</legend>
+
+        <div class="form-group row justify-content-center">
+            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-4 col-5 text-center">
+                <label for="start_date" class="col-form-label">Start Date:</label>
+                <input type="date" class="form-control" id="start_date" name="start_date" value="{{ request.form.get('start_date') }}">
+            </div>
+
+            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-4 col-5 text-center">
+                <label for="end_date" class="col-form-label">End Date:</label>
+                <input type="date" class="form-control" id="end_date" name="end_date" value="{{ request.form.get('end_date') }}">
+            </div>
+        </div>
+        <div class="form-group py-2 d-flex justify-content-center">
+            <div class="form-group m-2">
+                <button type="submit" class="btn btn-warning" name="show_task" onchange="this.form.submit();">Show Period</button>
+            </div>
+            <div class="form-group m-2">
+                <button type="submit" class="btn btn-outline-warning" name="show_all_task" onchange="this.form.submit();">Show All</button>
+            </div>
+            <div class="form-group m-2">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Delete Period</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Period</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          {% if legend == 'All' %}
+          Are you sure you want to delete ALL your tasks?
+          {% else %}
+          Are you sure you want to delete all tasks for {{ legend }}?
+          {% endif %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a href="{{ url_for('delete_period', period=legend) }}" class="btn btn-danger" name="delete_period_task">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="d-flex justify-content-end m-5">
+        <span class="badge rounded-pill text-bg-dark fs-6 mb-2">
+            {{ tasks.first }} - {{ tasks.last }} of {{ tasks.total }}
+        </span>
+    </div>
+{% endif %}
+    <ul class="list-group m-5">
+        {% for task in tasks.items %}
+            {% if task.star and not task.complete %}
+               <li class="list-group-item custom-notepad-bg">
+                    <form action="{{ url_for('update_task', task_id=task.id) }}" method="POST">
+                        {{ form.hidden_tag() }}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="text-wrap">
+                                <input class="form-check-input-star" type="checkbox" id="CompleteCheck_{{ task.id }}" name="complete_task" onchange="this.form.submit();" {% if task.complete %}checked{% endif %}>
+                                <label class="form-check-label-star" for="CompleteCheck_{{ task.id }}">{{ task.task }}</label>
+                            </div>
+                                <nav class="navbar navbar-expand-md navbar-light">
+                                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse_{{ task.id }}" aria-controls="navbarCollapse_{{ task.id }}" aria-expanded="false" aria-label="Toggle navigation">
+                                        <span class="navbar-toggler-icon"></span>
+                                    </button>
+                                    <div class="collapse navbar-collapse" id="navbarCollapse_{{ task.id }}">
+                                        <ul class="navbar-nav">
+                                            <li class="nav-item">
+                                                <label class="color-label mx-2 my-sm-2" for="ColorCheck_{{ task.id }}">
+                                                    <select class="color-label-{{ task.color }}" title="Tag with color" name="color_task" id="ColorCheck_{{ task.id }}" onchange="this.form.submit();">
+                                                        <option value="black" {% if task.color == "black" %}selected="selected"{% endif %}>Black</option>
+                                                        <option value="red" {% if task.color == "red" %}selected="selected"{% endif %}>Red</option>
+                                                        <option value="blue" {% if task.color == "blue" %}selected="selected"{% endif %}>Blue</option>
+                                                        <option value="green" {% if task.color == "green" %}selected="selected"{% endif %}>Green</option>
+                                                        <option value="purple" {% if task.color == "purple" %}selected="selected"{% endif %}>Purple</option>
+                                                        <option value="orange" {% if task.color == "orange" %}selected="selected"{% endif %}>Orange</option>
+                                                    </select>
+                                                </label>
+                                            </li>
+                                                <li class="nav-item">
+                                                    <input class="star-check-input visually-hidden" type="checkbox" id="StarCheck_{{ task.id }}" name="star_task" onchange="this.form.submit();" checked>
+                                                    <label class="star-check-label mx-2 my-sm-2" for="StarCheck_{{ task.id }}"></label>
+                                                </li>
+                                                <li class="nav-item d-none d-md-block">
+                                                    <span class="badge bg-secondary rounded-pill mx-2 mt-2">{{ task.date }}</span>
+                                                </li>
+                                                <li class="nav-item ms-md-5 mx-sm-2 my-sm-2">
+                                                    <a href="{{ url_for('delete_task', task_id=task.id) }}" title="Delete">❌</a>
+                                                </li>
+                                        </ul>
+                                    </div>
+                                </nav>
+                        </div>
+                    </form>
+                </li>
+            {% endif %}
+        {% endfor %}
+        <br>
+        {% for task in tasks.items %}
+            {% if not task.complete and not task.star%}
+                <li class="list-group-item custom-notepad-bg">
+                    <form action="{{ url_for('update_task', task_id=task.id) }}" method="POST">
+                        {{ form.hidden_tag() }}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="text-wrap">
+                                <input class="form-check-input" type="checkbox" id="CompleteCheck_{{ task.id }}" name="complete_task" onchange="this.form.submit();" {% if task.complete %}checked{% endif %}>
+                                <label class="form-check-label" for="CompleteCheck_{{ task.id }}">{{ task.task }}</label>
+                            </div>
+                                <nav class="navbar navbar-expand-md navbar-light">
+                                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse_{{ task.id }}" aria-controls="navbarCollapse_{{ task.id }}" aria-expanded="false" aria-label="Toggle navigation">
+                                        <span class="navbar-toggler-icon"></span>
+                                    </button>
+                                    <div class="collapse navbar-collapse" id="navbarCollapse_{{ task.id }}">
+                                        <ul class="navbar-nav">
+                                            <li class="nav-item">
+                                                <label class="color-label mx-2 my-sm-2" for="ColorCheck_{{ task.id }}">
+                                                    <select class="color-label-{{ task.color }}" title="Tag with color" name="color_task" id="ColorCheck_{{ task.id }}" onchange="this.form.submit();">
+                                                        <option value="black" {% if task.color == "black" %}selected="selected"{% endif %}>Black</option>
+                                                        <option value="red" {% if task.color == "red" %}selected="selected"{% endif %}>Red</option>
+                                                        <option value="blue" {% if task.color == "blue" %}selected="selected"{% endif %}>Blue</option>
+                                                        <option value="green" {% if task.color == "green" %}selected="selected"{% endif %}>Green</option>
+                                                        <option value="purple" {% if task.color == "purple" %}selected="selected"{% endif %}>Purple</option>
+                                                        <option value="orange" {% if task.color == "orange" %}selected="selected"{% endif %}>Orange</option>
+                                                    </select>
+                                                </label>
+                                            </li>
+                                                <li class="nav-item">
+                                                    <input class="star-check-input visually-hidden" type="checkbox" id="StarCheck_{{ task.id }}" name="star_task" onchange="this.form.submit();">
+                                                    <label class="star-check-label mx-2 my-sm-2" for="StarCheck_{{ task.id }}"></label>
+                                                </li>
+                                                <li class="nav-item d-none d-md-block">
+                                                    <span class="badge bg-secondary rounded-pill mx-2 mt-2">{{ task.date }}</span>
+                                                </li>
+                                                <li class="nav-item ms-md-5 mx-sm-2 my-sm-2">
+                                                    <a href="{{ url_for('delete_task', task_id=task.id) }}" title="Delete">❌</a>
+                                                </li>
+                                        </ul>
+                                    </div>
+                                </nav>
+                        </div>
+                    </form>
+                </li>
+            {% endif %}
+        {% endfor %}
+        <br>
+        {% for task in tasks.items %}
+            {% if task.complete %}
+                <li class="list-group-item complete-task">
+                    <form action="{{ url_for('update_task', task_id=task.id) }}" method="POST">
+                        {{ form.hidden_tag() }}
+                        <input class="form-check-input" type="checkbox" id="CompleteCheck_{{ task.id }}" name="complete_task" onchange="this.form.submit();" checked>
+                        <label class="complete-task-text" for="CompleteCheck_{{ task.id }}">{{ task.task }}</label>
+                        <span class="badge bg-secondary rounded-pill mx-2" style="text-decoration: line-through;">{{ task.date }}</span>
+                        <a class="float-end ms-5" href="{{ url_for('delete_task', task_id=task.id) }}" title="Delete">❌</a>
+                    </form>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <div class="text-center mt-4">
+        {% for page_num in tasks.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+              {% if page_num %}
+                {% if tasks.page == page_num %}
+                  <a class="btn btn-dark mb-4" href="{{ url_for('create_task', page=page_num) }}">{{ page_num }}</a>
+                {% else %}
+                  <a class="btn btn-outline-dark mb-4" href="{{ url_for('create_task', page=page_num) }}">{{ page_num }}</a>
+                {% endif %}
+              {% else %}
+                ...
+              {% endif %}
+        {% endfor %}
+    </div>
+{% endblock content %}
