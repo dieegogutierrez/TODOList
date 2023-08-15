@@ -8,6 +8,10 @@ TodoFlask is a web application built using Flask, SQLAlchemy, and PostgreSQL tha
 
 - **Password Hashing:** User passwords are securely hashed before being stored in the database, enhancing the security of user accounts.
 
+- **Password Recovery:** Users who forget their passwords can request a password reset. A verification token will be sent to their email to verify their identity and allow them to set a new password.
+
+- **"Remember Me" Option:** Users can choose to have their login session remembered on the device they're using, simplifying the login process for subsequent visits.
+
 - **Task Prioritization:** Users can star tasks to mark them as important or prioritize them over other tasks.
 
 - **Task Coloring:** Users have the option to assign different colors to tasks for better visual organization and distinction.
@@ -20,13 +24,13 @@ TodoFlask is a web application built using Flask, SQLAlchemy, and PostgreSQL tha
 
 Experience the power of TodoFlask by trying it out on live deployment:
 
-**[TodoFlask Live Demo](https://todo-list-zty0.onrender.com/home)**
+**[TodoFlask Live Demo](https://todo-list-1dg7.onrender.com)**
 
 ## Technologies Used
 
 - Flask: A lightweight web framework for building web applications.
 - SQLAlchemy: An Object-Relational Mapping (ORM) library for Python.
-- PostgreSQL: A powerful open-source relational database system.
+- SQLite: A self-contained, serverless, and zero-configuration SQL database engine.
 - HTML5: The latest version of the Hypertext Markup Language for structuring and presenting content on the web.
 - CSS3: The latest version of Cascading Style Sheets for styling and layout of web pages.
 - Jinja2: A templating engine for rendering dynamic content in HTML templates.
