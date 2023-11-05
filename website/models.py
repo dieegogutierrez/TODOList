@@ -45,5 +45,5 @@ class Task(db.Model):
         return f"Task('{self.task}', '{self.date}')"
 
 
-with app.app_context():
-    db.create_all()
+# with app.app_context():
+#     db.create_all()
