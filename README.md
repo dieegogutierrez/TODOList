@@ -24,7 +24,7 @@ TodoFlask is a web application built using Flask, SQLAlchemy, and PostgreSQL tha
 
 Experience the power of TodoFlask by trying it out on live deployment:
 
-**[TodoFlask Live Demo](https://todo-list-1dg7.onrender.com)**
+**[TodoFlask Live Demo](https://dgutierrezengineer.com/todowebapp)**
 
 ## Technologies Used
 
